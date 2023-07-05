@@ -138,7 +138,7 @@ class PeriodicTaskAdmin(admin.ModelAdmin):
         }),
     )
     readonly_fields = (
-        'last_run_at', 'crontab_translation',
+        'last_run_at', 'crontab_translation', 'created_at'
     )
 
     def crontab_translation(self, obj):
