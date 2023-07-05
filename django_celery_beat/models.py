@@ -11,6 +11,7 @@ from celery import current_app, schedules
 from cron_descriptor import (FormatException, MissingFieldException,
                              WrongArgumentException, get_description)
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.core.exceptions import MultipleObjectsReturned, ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
@@ -20,6 +21,8 @@ from . import querysets, validators
 from .clockedschedule import clocked
 from .tzcrontab import TzAwareCrontab
 from .utils import make_aware, now
+
+User = get_user_model()
 
 DAYS = 'days'
 HOURS = 'hours'
@@ -555,6 +558,17 @@ class PeriodicTask(models.Model):
         verbose_name=_('Description'),
         help_text=_(
             'Detailed description about the details of this Periodic Task'),
+    )
+
+    created_by = models.ForeignKey(
+        User,
+        verbose_name="Created By",
+        null=True,
+        on_delete=models.SET_NULL
+    )
+    created_at = models.DateTimeField(
+        'Created At',
+        auto_now_add=True
     )
 
     objects = querysets.PeriodicTaskQuerySet.as_manager()
